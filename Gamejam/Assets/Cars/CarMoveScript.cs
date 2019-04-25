@@ -17,6 +17,8 @@ public class CarMoveScript : MonoBehaviour
     public float notBrakeTime;
     public bool onGround;
     public float jumpHeight;
+    public AudioSource mine;
+    public AudioClip[] clips;
 
 
     // Start is called before the first frame update
@@ -24,6 +26,7 @@ public class CarMoveScript : MonoBehaviour
     {
         originalThrusterSpeed = thrusterSpeed;
         ownRb = GetComponent<Rigidbody>();
+        mine = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -83,6 +86,7 @@ public class CarMoveScript : MonoBehaviour
 
     void Die()
     {
+        mine.PlayOneShot(clips[0]);
         gameObject.SetActive(false);
     }
 
