@@ -87,6 +87,13 @@ public class CarMoveScript : MonoBehaviour
     void Die()
     {
         mine.PlayOneShot(clips[0]);
+
+
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if(players.Length == 1)
+        {
+            SceneManager.LoadScene("Joris");
+        }
         gameObject.SetActive(false);
     }
 
