@@ -6,11 +6,13 @@ public class CarMoveScript : MonoBehaviour
 {
     public Rigidbody ownRb;
     public Quaternion currentRotation;
-    public float sidewaySpeed;
+    public string horControls, verControls;
     public float thrusterSpeed;
     public float fallbackSpeed;
     private float originalThrusterSpeed;
     public float timeToRotate;
+    public float brakeTime;
+    public float notBrakeTime;
 
 
     // Start is called before the first frame update
@@ -31,7 +33,8 @@ public class CarMoveScript : MonoBehaviour
 
     void HandleInput()
     {
-        float x = Input.GetAxis("Horizontal");
+        float x = Input.GetAxis(horControls);
+        float y = Input.GetAxis(verControls);
 
         //if (x != 0)
         //{
@@ -40,15 +43,12 @@ public class CarMoveScript : MonoBehaviour
         //}
         //ownRb.AddForce(Vector3.left * -x * sidewaySpeed);
 
-        if (Input.GetKey(KeyCode.S))
+        if (y < 0)
         {
-            if (thrusterSpeed != originalThrusterSpeed)
-            {
-                thrusterSpeed = fallbackSpeed;
-            }
+            thrusterSpeed = Mathf.Lerp(thrusterSpeed, fallbackSpeed, brakeTime);
         } else
         {
-            thrusterSpeed = originalThrusterSpeed;
+            thrusterSpeed = Mathf.Lerp(thrusterSpeed, originalThrusterSpeed, notBrakeTime);
         }
 
         //ownRb.AddForce(ownRb.velocity.x + x*sidewaySpeed, ownRb.velocity.y, ownRb.velocity.z);
