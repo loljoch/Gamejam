@@ -77,7 +77,7 @@ public class CarMoveScript : MonoBehaviour
 
         if (collision.transform.CompareTag("Finish"))
         {
-            SceneManager.LoadScene("StartMenu");
+            SceneManager.LoadScene("Joris");
         }
     }
 
