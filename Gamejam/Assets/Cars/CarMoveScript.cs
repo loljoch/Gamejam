@@ -1,18 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CarMoveScript : MonoBehaviour
 {
     public Rigidbody ownRb;
     public Quaternion currentRotation;
-    public string horControls, verControls;
+    public string horControls;
+    public KeyCode jumpKey, brakeKey;
     public float thrusterSpeed;
     public float fallbackSpeed;
     private float originalThrusterSpeed;
     public float timeToRotate;
     public float brakeTime;
     public float notBrakeTime;
+    public bool onGround;
+    public float jumpHeight;
 
 
     // Start is called before the first frame update
@@ -34,7 +38,6 @@ public class CarMoveScript : MonoBehaviour
     void HandleInput()
     {
         float x = Input.GetAxis(horControls);
-        float y = Input.GetAxis(verControls);
 
         //if (x != 0)
         //{
@@ -43,7 +46,7 @@ public class CarMoveScript : MonoBehaviour
         //}
         //ownRb.AddForce(Vector3.left * -x * sidewaySpeed);
 
-        if (y < 0)
+        if (Input.GetKey(brakeKey))
         {
             thrusterSpeed = Mathf.Lerp(thrusterSpeed, fallbackSpeed, brakeTime);
         } else
@@ -51,6 +54,41 @@ public class CarMoveScript : MonoBehaviour
             thrusterSpeed = Mathf.Lerp(thrusterSpeed, originalThrusterSpeed, notBrakeTime);
         }
 
+        if (Input.GetKey(jumpKey) && onGround)
+        {
+            onGround = false;
+            ownRb.AddForce(0, jumpHeight, 0);
+        }
+
         //ownRb.AddForce(ownRb.velocity.x + x*sidewaySpeed, ownRb.velocity.y, ownRb.velocity.z);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.CompareTag("Ground"))
+        {
+            StartCoroutine(CoroutineGroundTimer());
+        }
+
+        if (collision.transform.CompareTag("Obstacle"))
+        {
+            Die();
+        }
+
+        if (collision.transform.CompareTag("Finish"))
+        {
+            SceneManager.LoadScene("StartMenu");
+        }
+    }
+
+    void Die()
+    {
+        gameObject.SetActive(false);
+    }
+
+    IEnumerator CoroutineGroundTimer()
+    {
+        yield return new WaitForSeconds(0.5f);
+        onGround = true;
     }
 }
